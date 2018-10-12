@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "log.h"
+#include "header/cycle.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -15,6 +16,7 @@
 #include <string.h>
 
 extern char **environ;
+
 
 int  my_daemon(){
     int  fd;
@@ -39,9 +41,10 @@ int  my_daemon(){
 
 }
 
-int create_worker(int number){
+int create_worker(int number,struct sigaction a){
     int i ;
     pid_t pid;
+    m_cycle *cycle;
 
     for (i = 0; i < number; ++i) {
         pid=fork();
@@ -50,11 +53,20 @@ int create_worker(int number){
         switch(pid){
             case 0:
                 zlog_info(zlog_category_instance, "I am the child process, my process id is %d", getpid());
+
                 for(;;){
                     sleep(1);
                 }
+
+
                 //干自己的事情
+//                if(w_Fail == cycle->worker_callback()){
+//                    zlog_info(zlog_category_instance, "worker_callback is Fail");
+//                    return;
+//                }
+
                 break;
+
             case -1:
                 perror("fork");
                 return w_Fail;
@@ -65,8 +77,18 @@ int create_worker(int number){
     }
 
     return w_Success;
+}
+
+int worker_callback(){
+
+    zlog_info(zlog_category_instance, "I am in worker_callback");
+
+    for(;;){
+        sleep(1);
+    }
 
 }
+
 
 void set_proctitle(char** argv, const char* new_name)
 {

@@ -5,8 +5,6 @@
 #include "header/socket.h"
 #include "header/epoll.h"
 
-
-
 int getSocket(int *fd){
     int result,__result;
 

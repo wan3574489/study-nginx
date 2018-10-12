@@ -5,12 +5,9 @@
 #ifndef EPOLL_EPOLL_H
 #define EPOLL_EPOLL_H
 
-#include "config.h"
-#include "hashtable.h"
-#include "log.h"
-#include "socket.h"
 #include <memory.h>
 #include <malloc.h>
+#include "config.h"
 
 typedef struct {
     int epfd;

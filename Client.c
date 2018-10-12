@@ -1,7 +1,5 @@
 #include <unistd.h>
-#include "header/Client.h"
-#include "header/epoll.h"
-#include "header/log.h"
+#include "header/config.h"
 
 
 int main(){

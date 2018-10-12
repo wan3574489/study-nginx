@@ -1,7 +1,4 @@
-#include "header/config.h"
-#include "header/Service.h"
-#include "header/epoll.h"
-#include "header/log.h"
+
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -9,22 +6,10 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/prctl.h>
+#include "header/config.h"
 
-extern char **environ;
 
-void print_sigset(sigset_t *set);
-
-void print_sigset(sigset_t *set)
-{
-    int i;
-    for(i = 1; i < NSIG; ++i){
-        if(sigismember(set,i))
-            printf("1");
-        else
-            printf("0");
-    }
-    putchar('\n');
-}
+extern int M_SIGTEST;
 
 int event(){
     int fd;
@@ -37,7 +22,6 @@ int event(){
     struct epoll_event ev,event[MAX_EVENT];
     int max_pid = 10;
     pid_t parentPid,_pid;
-
 
     my_epoll_event *epollEvent;
 
@@ -77,10 +61,28 @@ int event(){
     close(epfd);
 }
 
-int main(int argc , char **argv){
 
-    printf("main argv %s\n", argv[0]);
-    printf("main pid %d\n", getpid());
+
+int main(int argc , char **argv){
+    /*setenv("ZLOG_PROFILE_DEBUG","/root/c/log/zlog_debug.log",1);
+    setenv("ZLOG_PROFILE_ERROR","/root/c/log/zlog_error.log",1);*/
+
+    m_cycle *cycle;
+
+    if ( w_Fail == cycle_init(&cycle)){
+        zlog_error(zlog_category_instance, "cycle_init fail");
+        return 0;
+    }
+
+    if ( w_Fail == log_init("./config/log.conf") ){
+        printf("初始化日志失败!");
+        return 0;
+    }
+
+    if ( w_Fail == m_init_signals()){
+        zlog_error(zlog_category_instance, "m_init_signals fail");
+        return 0;
+    }
 
     int max_pid = 10;
     pid_t parentPid,_pid;
@@ -91,7 +93,8 @@ int main(int argc , char **argv){
     sigaddset(&set, SIGCHLD);
     sigaddset(&set, SIGALRM);
     sigaddset(&set, SIGIO);
-    sigaddset(&set, SIGINT);
+    sigaddset(&set, SIGSYS);
+    sigaddset(&set, SIGPIPE);
 
     if (sigprocmask(SIG_BLOCK, &set, NULL) == -1) {
         zlog_error(zlog_category_instance, "sigprocmask block fail!");
@@ -113,11 +116,15 @@ int main(int argc , char **argv){
         //监听并且阻塞信号
         zlog_info(zlog_category_instance, "master process pause");
 
-        printf("123123\n");
-
         for(;;){
 
+            //主进程阻塞信号
             sigsuspend(&set);
+
+            if(M_SIGTEST){
+                zlog_info(zlog_category_instance, "sig test process done!");
+                M_SIGTEST = 0;
+            }
 
         }
 
