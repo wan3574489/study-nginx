@@ -16,7 +16,7 @@ list(REMOVE_ITEM ZLOG_SRCS ./lib/zlog/zlog-chk-conf.c)
 add_definitions("-D__WITH_MURMUR")
 
 set(HASHTABLE_FILES lib/hashtable/hashtable.c lib/hashtable/hashtable.h lib/hashtable/murmur.h lib/hashtable/murmur.c)
-set(ALL_FILES socket.c header/config.h header/socket.h epoll.c header/epoll.h  log.c header/log  cycle.c header/cycle.h process.c header/process.h m_signals.c header/m_signals.h)
+set(ALL_FILES socket.c header/config.h header/socket.h epoll.c header/epoll.h  log.c header/log  cycle.c header/cycle.h process.c header/process.h m_signals.c header/m_signals.h m_event.c header/m_event.h)
 
 set(SOURCE_FILES main.c header/config.h)
 set(SERVICE_SOURCE_FILES Service.c ${ALL_FILES} ${HASHTABLE_FILES})

@@ -41,10 +41,9 @@ int  my_daemon(){
 
 }
 
-int create_worker(int number,struct sigaction a){
+int create_worker(int number,m_cycle *cycle){
     int i ;
     pid_t pid;
-    m_cycle *cycle;
 
     for (i = 0; i < number; ++i) {
         pid=fork();
@@ -54,16 +53,11 @@ int create_worker(int number,struct sigaction a){
             case 0:
                 zlog_info(zlog_category_instance, "I am the child process, my process id is %d", getpid());
 
-                for(;;){
-                    sleep(1);
-                }
-
-
                 //干自己的事情
-//                if(w_Fail == cycle->worker_callback()){
-//                    zlog_info(zlog_category_instance, "worker_callback is Fail");
-//                    return;
-//                }
+                if(w_Fail == cycle->worker_callback()){
+                    zlog_info(zlog_category_instance, "worker_callback is Fail");
+                    return w_Fail;
+                }
 
                 break;
 
@@ -88,7 +82,6 @@ int worker_callback(){
     }
 
 }
-
 
 void set_proctitle(char** argv, const char* new_name)
 {

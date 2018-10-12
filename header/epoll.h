@@ -8,6 +8,9 @@
 #include <memory.h>
 #include <malloc.h>
 #include "config.h"
+#include "epoll.h"
+#include "socket.h"
+
 
 typedef struct {
     int epfd;

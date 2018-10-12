@@ -1,6 +1,9 @@
 #include <unistd.h>
 #include "header/config.h"
-
+#include "epoll.h"
+#include "socket.h"
+#include "process.h"
+#include "cycle.h"
 
 int main(){
     int fd;

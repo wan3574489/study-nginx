@@ -7,60 +7,13 @@
 #include <sys/types.h>
 #include <sys/prctl.h>
 #include "header/config.h"
+#include "header/epoll.h"
+#include "header/socket.h"
+#include "header/process.h"
+#include "header/cycle.h"
 
 
 extern int M_SIGTEST;
-
-int event(){
-    int fd;
-    struct sockaddr_in server_addr = {0};
-    int port = 8080;
-    const char *local_addr = "0.0.0.0";
-
-    int epfd;
-    _epfd_ht *epfd_ht;
-    struct epoll_event ev,event[MAX_EVENT];
-    int max_pid = 10;
-    pid_t parentPid,_pid;
-
-    my_epoll_event *epollEvent;
-
-    if ( w_Fail == log_init("./config/log.conf") ){
-        printf("初始化日志失败!");
-        return 0;
-    }
-
-    if(getSocket(&fd) == w_Fail){
-        return 0;
-    }
-
-    if(bindAndListenSocket(fd,&server_addr,port,local_addr) == w_Fail) {
-        return 0;
-    }
-
-    epfd = epoll_create1(0);
-    if( 1 == epfd){
-        perror("create epoll instance");
-        return 0;
-    }
-
-    if( initEpoll(epfd,&epfd_ht) == w_Fail){
-        return 0;
-    }
-
-    if( w_Fail == initEpollEvent(epfd,fd,&epollEvent)){
-        return 0;
-    }
-
-    if( addEvent(EPOLLIN | EPOLLET,EpollWaitAccept,epollEvent,epfd_ht) == w_Fail){
-        return 0;
-    }
-
-    zlog_info(zlog_category_instance, "max_pid_number : %d",max_pid);
-
-    close(epfd);
-}
-
 
 
 int main(int argc , char **argv){
@@ -69,13 +22,13 @@ int main(int argc , char **argv){
 
     m_cycle *cycle;
 
-    if ( w_Fail == cycle_init(&cycle)){
-        zlog_error(zlog_category_instance, "cycle_init fail");
+    if ( w_Fail == log_init("./config/log.conf") ){
+        printf("初始化日志失败!");
         return 0;
     }
 
-    if ( w_Fail == log_init("./config/log.conf") ){
-        printf("初始化日志失败!");
+    if ( w_Fail == cycle_init(&cycle)){
+        zlog_error(zlog_category_instance, "cycle_init fail");
         return 0;
     }
 
@@ -103,7 +56,7 @@ int main(int argc , char **argv){
     sigemptyset(&set);
 
     parentPid = getpid();
-    int parent = create_worker(max_pid);
+    int parent = create_worker(max_pid,cycle);
     _pid = getpid();
 
     if(parentPid == _pid){

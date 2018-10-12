@@ -9,13 +9,10 @@
 #include <malloc.h>
 #include "config.h"
 
- struct _m_cycle {
+typedef struct  {
     int socket_fd;
     int (*worker_callback)();
-}  ;
-
-typedef  struct _m_cycle m_cycle;
-
+}  m_cycle ;
 
 int cycle_init(m_cycle **cycle);
 

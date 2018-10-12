@@ -17,18 +17,14 @@
 
 #include "log.h"
 #include "hashtable.h"
-#include "Service.h"
-#include "epoll.h"
-#include "socket.h"
-#include "process.h"
 #include "m_signals.h"
-#include "cycle.h"
-
-#define MAX_EVENT 1024
-#define READ_BUF_LEN 1024
 
 #define  w_Success 0
 #define  w_Fail  -1
+
+
+#define MAX_EVENT 1024
+#define READ_BUF_LEN 1024
 
 
 
