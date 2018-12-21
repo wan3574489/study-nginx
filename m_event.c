@@ -1,18 +1,20 @@
-//
-// Created by WanZengchuang on 2018/10/12.
-//
-
 #include "header/m_event.h"
 #include "header/epoll.h"
 #include "header/socket.h"
 #include "header/process.h"
 #include "header/m_signals.h"
+#include <stdio.h>
+#include <unistd.h>
+
+int cpu_num;
 
 int init_event(m_cycle *cycle){
     int fd;
     struct sockaddr_in server_addr = {0};
     int port = 8080;
     const char *local_addr = "0.0.0.0";
+
+    cpu_num = sysconf(_SC_NPROCESSORS_CONF);
 
     if(getSocket(&fd) == w_Fail){
         return w_Fail;
@@ -24,11 +26,19 @@ int init_event(m_cycle *cycle){
 
     cycle->socket_fd = fd;
 
-    epfd = epoll_create1(0);
-    if( 1 == epfd){
+    cycle->epfd = epoll_create1(0);
+    if( 1 == cycle->epfd){
         zlog_error(zlog_category_instance, "create epoll instance ");
         return w_Fail;
     }
+
+    if(shemem_alloc(cycle->shm) == w_Fail){
+        zlog_error(zlog_category_instance, "shemem alloc fail ");
+        return w_Fail;
+    }
+
+    //shmtx_create(cycle->mtx,cycle->shm->addr);
+
 
     return w_Success;
 }
