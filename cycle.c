@@ -17,10 +17,8 @@ int cycle_init(m_cycle **cycle){
         return w_Fail;
     }
 
-    if(w_Fail == init_event(*cycle)){
-        zlog_fatal(zlog_category_instance, "init_event 失败");
-        return w_Fail;
-    }
+
+
 
     temp = *cycle;
     temp->worker_callback = worker_callback;
@@ -33,6 +31,12 @@ int cycle_init(m_cycle **cycle){
     //bzero(temp->shm->addr, sizeof(unsigned char)* 4096);
 
     temp->mtx = (m_shmtx_t *)malloc(sizeof(m_shmtx_t));
+
+
+    if(w_Fail == init_event(*cycle)){
+        zlog_fatal(zlog_category_instance, "init_event 失败");
+        return w_Fail;
+    }
 
     zlog_debug(zlog_category_instance, "cycle socket  %d ",temp->socket_fd);
 

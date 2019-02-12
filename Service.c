@@ -20,6 +20,7 @@ int main(int argc , char **argv){
     /*setenv("ZLOG_PROFILE_DEBUG","/root/c/log/zlog_debug.log",1);
     setenv("ZLOG_PROFILE_ERROR","/root/c/log/zlog_error.log",1);*/
 
+
     m_cycle *cycle;
 
     if ( w_Fail == log_init("./config/log.conf") ){
@@ -27,15 +28,19 @@ int main(int argc , char **argv){
         return 0;
     }
 
+
+
     if ( w_Fail == cycle_init(&cycle)){
         zlog_error(zlog_category_instance, "cycle_init fail");
         return 0;
     }
 
+
     if ( w_Fail == m_init_signals()){
         zlog_error(zlog_category_instance, "m_init_signals fail");
         return 0;
     }
+
 
     int max_pid = 10;
     pid_t parentPid,_pid;

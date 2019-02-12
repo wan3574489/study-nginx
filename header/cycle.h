@@ -15,7 +15,9 @@ typedef struct  {
     int epfd;
     int (*worker_callback)();
 
+    //共享内存
     m_shmem_t *shm;
+    //自旋锁
     m_shmtx_t *mtx;
 
 }  m_cycle ;
