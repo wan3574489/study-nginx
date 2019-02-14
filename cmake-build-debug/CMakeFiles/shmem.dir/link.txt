@@ -1,1 +1,0 @@
-/usr/bin/cc -g   CMakeFiles/shmem.dir/test/shmem/main.c.o  -o shmem 
