@@ -29,7 +29,6 @@ int main(int argc , char **argv){
     }
 
 
-
     if ( w_Fail == cycle_init(&cycle)){
         zlog_error(zlog_category_instance, "cycle_init fail");
         return 0;

@@ -3,6 +3,7 @@
 //
 
 #include <string.h>
+#include <m_shmem.h>
 #include "header/cycle.h"
 #include "header/process.h"
 #include "header/m_event.h"
@@ -18,8 +19,6 @@ int cycle_init(m_cycle **cycle){
     }
 
 
-
-
     temp = *cycle;
     temp->worker_callback = worker_callback;
 
@@ -27,11 +26,11 @@ int cycle_init(m_cycle **cycle){
     bzero(temp->shm, sizeof(m_shmem_t));
     temp->shm->size = 4096;
 
-    //temp->shm ->addr = (unsigned char *)malloc(sizeof(unsigned char)* 4096);
+    //temp->shm->addr = (unsigned char *)malloc(sizeof(unsigned char)* 4096);
     //bzero(temp->shm->addr, sizeof(unsigned char)* 4096);
 
     temp->mtx = (m_shmtx_t *)malloc(sizeof(m_shmtx_t));
-
+    temp->mtx->spin = -1;
 
     if(w_Fail == init_event(*cycle)){
         zlog_fatal(zlog_category_instance, "init_event 失败");

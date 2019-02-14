@@ -12,6 +12,6 @@ int my_daemon();
 int create_worker(int number,m_cycle *cycle);
 void set_proctitle(char** argv, const char* new_name);
 
-int worker_callback();
+int worker_callback(m_cycle *cycle);
 
 #endif //EPOLL_MULTIPROCESS_H

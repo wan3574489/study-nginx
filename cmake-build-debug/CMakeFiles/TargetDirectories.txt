@@ -1,0 +1,6 @@
+/home/wanzengchuang/CLionProjects/study-nginx/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/wanzengchuang/CLionProjects/study-nginx/cmake-build-debug/CMakeFiles/shmem.dir
+/home/wanzengchuang/CLionProjects/study-nginx/cmake-build-debug/CMakeFiles/Client.dir
+/home/wanzengchuang/CLionProjects/study-nginx/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/wanzengchuang/CLionProjects/study-nginx/cmake-build-debug/CMakeFiles/Service.dir
+/home/wanzengchuang/CLionProjects/study-nginx/cmake-build-debug/CMakeFiles/zlog_s.dir

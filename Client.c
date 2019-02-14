@@ -16,7 +16,7 @@ int main(){
         return 0;
     }
 
-    if(getSocket(&fd) == w_Fail){
+    if(getSocketBlock(&fd) == w_Fail){
         return 0;
     }
 

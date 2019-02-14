@@ -14,6 +14,7 @@
 #include<sys/stat.h>
 #include<fcntl.h>
 #include <string.h>
+#include <cycle.h>
 
 extern char **environ;
 
@@ -54,7 +55,7 @@ int create_worker(int number,m_cycle *cycle){
                 zlog_info(zlog_category_instance, "I am the child process, my process id is %d", getpid());
 
                 //干自己的事情
-                if(w_Fail == cycle->worker_callback()){
+                if(w_Fail == cycle->worker_callback(*cycle)){
                     zlog_info(zlog_category_instance, "worker_callback is Fail");
                     return w_Fail;
                 }
@@ -73,12 +74,27 @@ int create_worker(int number,m_cycle *cycle){
     return w_Success;
 }
 
-int worker_callback(){
+int worker_callback(m_cycle *cycle){
 
     zlog_info(zlog_category_instance, "I am in worker_callback");
 
     for(;;){
+
+
         sleep(1);
+
+        //获取自旋锁
+        if(shmtx_lock(cycle->mtx) == w_Success){
+
+            //操作
+            zlog_info(zlog_category_instance, "I am get shmtx success! ");
+
+            //释放自旋锁
+            shmtx_unlock(cycle->mtx);
+
+        }
+
+
     }
 
 }

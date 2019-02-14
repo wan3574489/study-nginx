@@ -21,5 +21,6 @@
 int getSocket(int *fd);
 int bindAndListenSocket(const int fd,struct sockaddr_in *server_addr,int port,char const *local_addr);
 int ConnectService(const int fd,struct sockaddr_in *server_addr,int port, char const *local_addr);
+int getSocketBlock(int *fd);
 
 #endif //EPOLL_FUNCTION_H

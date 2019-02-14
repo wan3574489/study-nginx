@@ -40,7 +40,11 @@ int init_event(m_cycle *cycle){
         return w_Fail;
     }
 
-    //shmtx_create(cycle->mtx,cycle->shm->addr);
+
+    if(shmtx_create(cycle->mtx,cycle->shm->addr) == w_Fail){
+        zlog_error(zlog_category_instance, "shmtx create fail ");
+        return w_Fail;
+    }
 
 
     return w_Success;

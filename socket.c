@@ -29,6 +29,26 @@ int getSocket(int *fd){
     return  w_Success;
 }
 
+int getSocketBlock(int *fd){
+    int result;
+
+    *fd = socket(AF_INET,SOCK_STREAM,0);
+    if( -1 == *fd){
+        perror("Open listen socket fail");
+        return w_Fail;
+    }
+
+    int on = 1;
+    result = setsockopt(*fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
+    if( -1 == result ){
+        perror(" set socket fail");
+        return w_Fail;
+    }
+
+
+    return  w_Success;
+}
+
 int bindAndListenSocket(const int fd,struct sockaddr_in *server_addr,int port, char const *local_addr){
     int result ;
 
