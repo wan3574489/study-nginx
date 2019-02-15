@@ -26,7 +26,7 @@ set(ALL_FILES socket.c header/config.h header/socket.h epoll.c header/epoll.h  l
 set(SOURCE_FILES main.c header/config.h)
 set(SERVICE_SOURCE_FILES Service.c ${ALL_FILES} ${HASHTABLE_FILES})
 set(SERVICE_CLIENT_FILES Client.c  ${ALL_FILES} ${HASHTABLE_FILES})
-set(SERVICE_CLIENT_FILES ./test/shmem/main.c  ${ALL_FILES} )
+#set(SERVICE_CLIENT_FILES ./test/shmem/main.c  ${ALL_FILES} )
 
 
 ##set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ./build/Relase)
@@ -38,7 +38,7 @@ target_link_libraries(zlog_s ${CMAKE_THREAD_LIBS_INIT})
 #add_executable(epoll ${SOURCE_FILES})
 add_executable(Service ${SERVICE_SOURCE_FILES})
 add_executable(Client ${SERVICE_CLIENT_FILES})
-add_executable(shmem test/shmem/main.c)
+#add_executable(shmem test/shmem/main.c)
 
 ### 链接 zlog库
 target_link_libraries(Service zlog_s)

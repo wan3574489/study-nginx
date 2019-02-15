@@ -18,6 +18,8 @@ int shemem_alloc(m_shmem_t *shm){
         return w_Fail;
     }
 
+    bzero(shm->addr,shm->size);
+
     return w_Success;
 }
 
@@ -51,21 +53,32 @@ int shmtx_lock(m_shmtx_t *mtx){
 
     for(;;){
 
-        val = (atomic_t)mtx->lock;
-        if(val == 0 && atomic_cmp_set(mtx->lock,0,val)){
+        zlog_info(zlog_category_instance, "shmtx try lock run 1!");
+
+        val = (atomic_t)*mtx->lock;
+
+        zlog_info(zlog_category_instance, "shmtx try lock run 2!");
+
+        if(val == 0 && atomic_cmp_set(mtx->lock,0,1)){
             zlog_info(zlog_category_instance, "shmtx try lock success!");
             return w_Success;
         }
-        
+
+        zlog_info(zlog_category_instance, "shmtx try lock run 3!");
+
         if(cpu_num > 1){
 
             for ( n = 1; n < mtx->spin ;  n <<= 1) {
 
-                for (i = 0; i < n ; i++) {
+                zlog_info(zlog_category_instance, "shmtx try lock run 4!");
 
+                for (i = 0; i < n ; i++) {
+                        cpu_pause();
                 }
 
-                if(val == 0 && atomic_cmp_set(mtx->lock,0,val)){
+                zlog_info(zlog_category_instance, "shmtx try lock run 5!");
+
+                if(val == 0 && atomic_cmp_set(mtx->lock,0,1)){
                     zlog_info(zlog_category_instance, "shmtx try lock success!");
                     return w_Success;
                 }
@@ -85,6 +98,8 @@ int shmtx_unlock(m_shmtx_t *mtx){
     if(mtx->lock != 0){
         return w_Success;
     }
+
+    zlog_info(zlog_category_instance, "shmtx try unlock success!");
 
     atomic_cmp_set(mtx->lock,1,0);
     return w_Success;

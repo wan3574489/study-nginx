@@ -7,9 +7,13 @@
 
 #include <sys/mman.h>
 #include <sched.h>
+#include <string.h>
+
 
 //unsigned long 32位
 typedef volatile unsigned long atomic_t;
+
+
 
 typedef struct {
     int size;
@@ -34,5 +38,8 @@ int shmtx_unlock(m_shmtx_t *mtx);
 
 //原子操作
 int atomic_cmp_set(atomic_t *lock,int old,int set);
+
+//让出CPU
+#define cpu_pause()             __asm__ ("pause")
 
 #endif //EPOLL_M_SHMEM_H

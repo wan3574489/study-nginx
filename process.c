@@ -55,7 +55,7 @@ int create_worker(int number,m_cycle *cycle){
                 zlog_info(zlog_category_instance, "I am the child process, my process id is %d", getpid());
 
                 //干自己的事情
-                if(w_Fail == cycle->worker_callback(*cycle)){
+                if(w_Fail == cycle->worker_callback(cycle)){
                     zlog_info(zlog_category_instance, "worker_callback is Fail");
                     return w_Fail;
                 }
@@ -80,7 +80,6 @@ int worker_callback(m_cycle *cycle){
 
     for(;;){
 
-
         sleep(1);
 
         //获取自旋锁
@@ -89,6 +88,7 @@ int worker_callback(m_cycle *cycle){
             //操作
             zlog_info(zlog_category_instance, "I am get shmtx success! ");
 
+            sleep(10);
             //释放自旋锁
             shmtx_unlock(cycle->mtx);
 
