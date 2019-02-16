@@ -77,6 +77,7 @@ int create_worker(int number,m_cycle *cycle){
 int worker_callback(m_cycle *cycle){
 
     zlog_info(zlog_category_instance, "I am in worker_callback");
+    long int m = 1000000000,i = 0;
 
     for(;;){
 
@@ -88,7 +89,10 @@ int worker_callback(m_cycle *cycle){
             //操作
             zlog_info(zlog_category_instance, "I am get shmtx success! ");
 
-            sleep(10);
+            for (i = 0; i < m; ++i) {
+                i*i*i*i*i*i*i*i*i*m;
+            }
+
             //释放自旋锁
             shmtx_unlock(cycle->mtx);
 

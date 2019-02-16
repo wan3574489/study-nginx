@@ -41,7 +41,7 @@ int main(int argc , char **argv){
     }
 
 
-    int max_pid = 2;
+    int max_pid = 10;
     pid_t parentPid,_pid;
 
     sigset_t           set;
