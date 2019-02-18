@@ -9,10 +9,17 @@
 #include <malloc.h>
 #include "config.h"
 #include "m_shmem.h"
+#include "epoll.h"
 
 typedef struct  {
+
     int socket_fd;
+
     int epfd;
+    _epfd_ht *epfd_ht;
+    my_epoll_event *epollEvent;
+
+
     int (*worker_callback)();
 
     //共享内存

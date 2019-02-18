@@ -17,10 +17,12 @@ int main(){
     }
 
     if(getSocketBlock(&fd) == w_Fail){
+        zlog_fatal(zlog_category_instance, "getSocketBlock fail");
         return 0;
     }
 
     if( w_Fail == ConnectService(fd,&server_addr,port,Service_addr)){
+        zlog_fatal(zlog_category_instance, "ConnectService fail");
         return 0;
     }
 
@@ -29,6 +31,8 @@ int main(){
         zlog_fatal(zlog_category_instance, "write fail");
         return 0;
     }
+
+    zlog_info(zlog_category_instance, "yes ");
 
     close(fd);
     return 1;

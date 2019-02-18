@@ -51,7 +51,7 @@ int shmtx_lock(m_shmtx_t *mtx){
 
     zlog_info(zlog_category_instance, "shmtx try lock");
 
-    for(;;){
+    for(int t = 1; t<=10 ; t++){
 
 
         val = (atomic_t)*mtx->lock;
@@ -63,15 +63,14 @@ int shmtx_lock(m_shmtx_t *mtx){
         }
 
 
+
         if(cpu_num > 1){
 
-            for ( n = 1; n < mtx->spin ;  n <<= 1) {
-
+            for ( n = 1; n < 4028 ;  n <<= 1) {
 
                 for (i = 0; i < n ; i++) {
-                        cpu_pause();
+                    cpu_pause();
                 }
-
 
                 if(val == 0 && atomic_cmp_set(mtx->lock,0,1)){
                     zlog_info(zlog_category_instance, "shmtx try lock success!");
@@ -85,7 +84,7 @@ int shmtx_lock(m_shmtx_t *mtx){
         sched_yield();
     }
 
-    return w_Success;
+    return w_Fail;
 }
 
 int shmtx_unlock(m_shmtx_t *mtx){
