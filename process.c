@@ -15,9 +15,12 @@
 #include<fcntl.h>
 #include <string.h>
 #include <cycle.h>
+#include <time.h>
 
 extern char **environ;
 
+#define MAX_DELAY 10240
+#define MIN_DELAY 2
 
 int  my_daemon(){
     int  fd;
@@ -78,22 +81,83 @@ int worker_callback(m_cycle *cycle){
 
     zlog_info(zlog_category_instance, "I am in worker_callback");
 
+    int  has_lock = 0;
+    int wait_count;
+    struct epoll_event event[1024];
+    int delay = MAX_DELAY << 1;
+
     for(;;){
 
-        sleep(1);
-
-        //获取自旋锁
         if(shmtx_lock(cycle->mtx) == w_Success){
 
-            //操作
-            zlog_info(zlog_category_instance, "I am get shmtx success! ");
+            has_lock = 1;
 
-            sleep(10);
-            //释放自旋锁
-            shmtx_unlock(cycle->mtx);
+            //设置事件监听
+            if( addEvent(EPOLLIN | EPOLLET,EpollWaitAccept,cycle->epollEvent,cycle->epfd_ht) == w_Fail){
 
+                zlog_info(zlog_category_instance, "addEvent epollWaitAccetp error ! ");
+
+                return w_Fail;
+            }
         }
 
+
+        // 等待事件
+        wait_count = epoll_wait(cycle->epfd, event, 1024, delay);
+
+
+        if( wait_count > 0){
+
+            if(removeEvent(cycle->epollEvent,cycle->epfd_ht) == w_Fail){
+
+                zlog_info(zlog_category_instance, "removeEvent epollWaitAccetp error ! ");
+
+                return w_Fail;
+            }
+
+
+            zlog_info(zlog_category_instance, "wait_count most event ! ");
+            if(delay > MIN_DELAY){
+                delay >> 1;
+            }
+
+            //等待读取数据
+            for (int i = 0 ; i < wait_count; i++) {
+                uint32_t events = event[i].events;
+
+                if( events == EPOLLIN | EPOLLET ){
+                    if(cycle->socket_fd == event[i].data.fd){
+                        EpollWaitAccept(event[i].data.fd,events,cycle->epfd,NULL,cycle->epfd_ht);
+                    }else{
+                        EpollWaitRead(event[i].data.fd,events,cycle->epfd,NULL,cycle->epfd_ht);
+                    }
+                }
+
+            }
+
+
+        }else{
+            zlog_info(zlog_category_instance, "wait_count == 0");
+            if(delay < MAX_DELAY ){
+                delay << 1;
+            }
+        }
+
+
+        if(has_lock == 1){
+
+            if(removeEvent(cycle->epollEvent,cycle->epfd_ht) == w_Fail){
+
+                zlog_info(zlog_category_instance, "removeEvent epollWaitAccetp error ! ");
+
+                return w_Fail;
+            }
+
+            shmtx_unlock(cycle->mtx);
+
+            has_lock = 0;
+
+        }
 
     }
 

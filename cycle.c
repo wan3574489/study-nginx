@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <m_shmem.h>
+#include <cycle.h>
 #include "header/cycle.h"
 #include "header/process.h"
 #include "header/m_event.h"
@@ -26,11 +27,16 @@ int cycle_init(m_cycle **cycle){
     bzero(temp->shm, sizeof(m_shmem_t));
     temp->shm->size = 4096;
 
-    //temp->shm->addr = (unsigned char *)malloc(sizeof(unsigned char)* 4096);
-    //bzero(temp->shm->addr, sizeof(unsigned char)* 4096);
 
     temp->mtx = (m_shmtx_t *)malloc(sizeof(m_shmtx_t));
     temp->mtx->spin = -1;
+
+    temp->epfd_ht =  (_epfd_ht *)malloc(sizeof(_epfd_ht));
+    bzero(temp->epfd_ht, sizeof(_epfd_ht));
+
+    temp->epollEvent = (my_epoll_event *)malloc(sizeof(my_epoll_event));
+    bzero(temp->epollEvent, sizeof(my_epoll_event));
+
 
     if(w_Fail == init_event(*cycle)){
         zlog_fatal(zlog_category_instance, "init_event 失败");

@@ -5,6 +5,7 @@
 #include "header/m_signals.h"
 #include <stdio.h>
 #include <unistd.h>
+#include <cycle.h>
 
 int cpu_num;
 
@@ -25,12 +26,19 @@ int init_event(m_cycle *cycle){
     }
 
     cycle->socket_fd = fd;
-
     cycle->epfd = epoll_create1(0);
 
 
     if( 1 == cycle->epfd){
         zlog_error(zlog_category_instance, "create epoll instance ");
+        return w_Fail;
+    }
+
+    if( initEpoll(cycle->epfd,&cycle->epfd_ht) == w_Fail){
+        return w_Fail;
+    }
+
+    if( w_Fail == initEpollEvent(cycle->epfd,cycle->socket_fd,&cycle->epollEvent)){
         return w_Fail;
     }
 

@@ -47,7 +47,7 @@ void EpollWaitRead(int fd, int events,int epfd, void *arg,_epfd_ht *epfd_ht){
         if (-1 == result_len) {
 
             if (EAGAIN != errno) {
-                perror ("Read data");
+                zlog_info(zlog_category_instance, "Read data error : %s");
                 done = 1;
             }
 
@@ -209,7 +209,7 @@ int removeEvent(my_epoll_event *my_epoll_event_s,_epfd_ht *epfd_ht){
     result = epoll_ctl( my_epoll_event_s->epfd , EPOLL_CTL_DEL , my_epoll_event_s->fd , NULL);
 
     if( -1 == result){
-        perror("Set epoll_ctl");
+        perror("del epoll_ctl");
         return w_Fail;
     }
     //从ht中删除
